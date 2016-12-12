@@ -16,7 +16,7 @@ tell application "Terminal"
 	local allOpenedWindows
 	local initialOpenedWindows
 	local windowID
-	set themeName to "Solarized Dark xterm-256color"
+	set themeName to "Darcula"
 
 	(* Store the IDs of all the open terminal windows. *)
 	set initialOpenedWindows to id of every window
@@ -24,7 +24,7 @@ tell application "Terminal"
 	(* Open the custom theme so that it gets added to the list
 	   of available terminal themes (note: this will open two
 	   additional terminal windows). *)
-	do shell script "open '$HOME/init/" & themeName & ".terminal'"
+	do shell script "open 'terminal/" & themeName & ".terminal'"
 
 	(* Wait a little bit to ensure that the custom theme is added. *)
 	delay 1
@@ -56,6 +56,6 @@ end tell
 EOD
 
 echo "Configuring iTerm.app..."
-open "${HOME}/init/Solarized Dark.itermcolors"
+open "iterm/darcula.itermcolors"
 
 echo "All done!"
