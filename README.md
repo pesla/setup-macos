@@ -10,7 +10,7 @@ A dedicated chapter for a simple warning. Fork this repository, inspect the file
 
 First of all, download the Mac apps you like to use. The scripts in this repository assume that the following apps are installed:
 
-- [Google Chrome](https://www.google.com/chrome/browser/desktop/) and [Google Chrome Canary](https://www.google.com/chrome/browser/canary.html)
+- [Google Chrome](https://www.google.com/chrome/browser/desktop/)
 - [iTerm 2](https://www.iterm2.com/downloads.html)
 - [Sublime Text 3](https://www.sublimetext.com/3)
 
@@ -67,15 +67,15 @@ My Terminal.app runs on Bash and is configured by (some of) my [dotfiles](https:
 
 ![iTerm.app using the Darcula theme](/screenshots/iterm-darcula.png?raw=true)
 
-iTerm 2 runs on Zsh and [OhMyZsh](https://github.com/robbyrussell/oh-my-zsh) instead of Bash. [This is where](https://github.com/pesla/dotfiles/blob/master/.zshrc)
- you'll find my Zsh configuration. The prompt is configured by a custom Zsh theme and depends on powerline fonts to work well.
+My iTerm 2 runs on Zsh and [OhMyZsh](https://github.com/robbyrussell/oh-my-zsh) instead of Bash. The prompt is configured
+by a custom Zsh theme and depends on powerline fonts to work well.
  
 To install:
 
 1. Clone into `powerline/fonts` and run `install.sh` to install all fonts
 2. Make sure you've [installed OhMyZsh](https://github.com/robbyrussell/oh-my-zsh) (Zsh itself comes preloaded on OS X)
 3. Run `./zsh.sh` to install the theme
-4. Finally, tell Zsh to use the newly installed theme by setting `ZSH_THEME="pesla"` in `.zshrc`
+4. Finally, tell Zsh to use the newly installed theme by setting `ZSH_THEME="Darcula"` in `.zshrc`
 
 If you changed the default Zsh installation directory, you should manually install the theme.
 

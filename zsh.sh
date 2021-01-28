@@ -18,4 +18,4 @@ if [ ! -d "~/.oh-my-zsh/custom/themes" ]; then
     mkdir "~/.oh-my-zsh/custom/themes"
 fi
 
-cp -r zsh/pesla.zsh-theme ~/.oh-my-zsh/custom/themes 2> /dev/null
+cp -r zsh/Darcula.zsh-theme ~/.oh-my-zsh/custom/themes 2> /dev/null

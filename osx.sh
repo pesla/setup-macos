@@ -24,7 +24,8 @@ while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
 echo "### General UI and UX settings ###"
 
 # Set computer name (as done via System Preferences → Sharing)
-COMPUTER_NAME="0x7065746572"
+# My computer name: Hex-encoded `pesla`
+COMPUTER_NAME="0x7065736c61"
 
 echo -n "Setting computer name to $COMPUTER_NAME. Are you sure? [y/n] "
 read answer
@@ -45,29 +46,17 @@ sudo pmset -a standbydelay 86400
 echo "Disabling the sound effects on boot..."
 sudo nvram SystemAudioVolume=" "
 
-echo "Disabling transparency in the menu bar and elsewhere..."
-defaults write com.apple.universalaccess reduceTransparency -bool true
-
-echo "Hiding volume and user icon in menu bar..."
-for domain in ~/Library/Preferences/ByHost/com.apple.systemuiserver.*; do
-	defaults write "${domain}" dontAutoLoad -array \
-		"/System/Library/CoreServices/Menu Extras/Volume.menu" \
-		"/System/Library/CoreServices/Menu Extras/User.menu"
-done
-
-echo "Enabling bluetooth and battery menu"
-defaults write com.apple.systemuiserver menuExtras -array \
-	"/System/Library/CoreServices/Menu Extras/Bluetooth.menu" \
-	"/System/Library/CoreServices/Menu Extras/Battery.menu" \
-
-echo "Setting highlight color to green..."
-defaults write NSGlobalDomain AppleHighlightColor -string "0.764700 0.976500 0.568600"
-
 echo "Setting sidebar icon size to medium..."
 defaults write NSGlobalDomain NSTableViewDefaultSizeMode -int 2
 
 echo "Forcing scrollbars to be always visible..."
 defaults write NSGlobalDomain AppleShowScrollBars -string "Always"
+
+echo "Disabling the over-the-top focus ring animation..."
+defaults write NSGlobalDomain NSUseAnimatedFocusRing -bool false
+
+echo "Adjusting toolbar title rollover delay..."
+defaults write NSGlobalDomain NSToolbarTitleViewRolloverDelay -float 0
 
 echo "Increasing window resize speed for cocoa apps..."
 defaults write NSGlobalDomain NSWindowResizeTime -float 0.001
@@ -83,8 +72,14 @@ defaults write NSGlobalDomain PMPrintingExpandedStateForPrint2 -bool true
 echo "Forcing new documents to save to disk by default (not to iCloud)..."
 defaults write NSGlobalDomain NSDocumentSaveNewDocumentsToCloud -bool false
 
+echo "Forcing printer app to quit automatically once the print jobs complete..."
+defaults write com.apple.print.PrintingPrefs "Quit When Finished" -bool true
+
 echo "Disabling the 'Are you sure you want to open this application?'-dialog..."
 defaults write com.apple.LaunchServices LSQuarantine -bool false
+
+echo "Removing duplicates in the “Open With” menu..."
+/System/Library/Frameworks/CoreServices.framework/Frameworks/LaunchServices.framework/Support/lsregister -kill -r -domain local -domain system -domain user
 
 echo "Display ASCII control characters using caret notation in standard text views..."
 defaults write NSGlobalDomain NSTextShowsControlCharacters -bool true
@@ -101,28 +96,60 @@ sudo systemsetup -setrestartfreeze on
 echo "Disabling computer sleep mode..."
 sudo systemsetup -setcomputersleep Off > /dev/null
 
-echo "Disabling smart quotes as they’re annoying when typing code..."
-defaults write NSGlobalDomain NSAutomaticQuoteSubstitutionEnabled -bool false
+echo "Disabling automatic capitalization as it’s annoying when typing code"
+defaults write NSGlobalDomain NSAutomaticCapitalizationEnabled -bool false
 
-echo "Disabling smart dashes as they’re annoying when typing code..."
+echo "Disabling smart dashes as they’re annoying when typing code"
 defaults write NSGlobalDomain NSAutomaticDashSubstitutionEnabled -bool false
 
+echo "Disabling automatic period substitution as it’s annoying when typing code"
+defaults write NSGlobalDomain NSAutomaticPeriodSubstitutionEnabled -bool false
+
+echo "Disabling smart quotes as they’re annoying when typing code"
+defaults write NSGlobalDomain NSAutomaticQuoteSubstitutionEnabled -bool false
+
 ###############################################################################
-# SSD-specific tweaks                                                         #
+# Energy saving                                                               #
 ###############################################################################
 
-echo "### SSD specific tweaks ###"
+echo "### Energy saving ###"
 
-echo  "Disabling hibernation (speeds up entering sleep mode)..."
+echo "Enable lid wakeup..."
+sudo pmset -a lidwake 1
+
+echo "Restart automatically on power loss..."
+sudo pmset -a autorestart 1
+
+echo "Restart automatically if the computer freezes..."
+sudo systemsetup -setrestartfreeze on
+
+echo "Sleep the display after 15 minutes..."
+sudo pmset -a displaysleep 15
+
+echo "Disable machine sleep while charging..."
+sudo pmset -c sleep 0
+
+echo "Set machine sleep to 5 minutes on battery..."
+sudo pmset -b sleep 5
+
+echo "Set standby delay to 24 hours (default is 1 hour)..."
+sudo pmset -a standbydelay 86400
+
+echo "Never go into computer sleep mode..."
+sudo systemsetup -setcomputersleep Off > /dev/null
+
+echo "Hibernation mode..."
+# 0: Disable hibernation (speeds up entering sleep mode)
+# 3: Copy RAM to disk so the system state can still be restored in case of a
+#    power failure.
 sudo pmset -a hibernatemode 0
 
-echo "Removing the sleep image file to save disk space..."
+echo "Remove the sleep image file to save disk space..."
 sudo rm /private/var/vm/sleepimage
+echo "Create a zero-byte file instead..."
 sudo touch /private/var/vm/sleepimage
+echo "And make sure it can’t be rewritten..."
 sudo chflags uchg /private/var/vm/sleepimage
-
-echo "Disabling the sudden motion sensor as it’s not useful for SSDs..."
-sudo pmset -a sms 0
 
 ###############################################################################
 # Trackpad, mouse, keyboard, Bluetooth accessories, and input                 #
@@ -166,9 +193,6 @@ defaults write NSGlobalDomain AppleMeasurementUnits -string "Centimeters"
 defaults write NSGlobalDomain AppleMetricUnits -bool true
 sudo systemsetup -settimezone "Europe/Amsterdam" > /dev/null
 
-echo "Disabling auto-correct..."
-defaults write NSGlobalDomain NSAutomaticSpellingCorrectionEnabled -bool false
-
 echo "Stopping iTunes to respond to media keys..."
 launchctl unload -w /System/Library/LaunchAgents/com.apple.rcd.plist 2> /dev/null
 
@@ -182,8 +206,8 @@ echo "Require password immediately after sleep or screen saver begins..."
 defaults write com.apple.screensaver askForPassword -int 1
 defaults write com.apple.screensaver askForPasswordDelay -int 0
 
-echo "Changing default screenshot location to the desktop..."
-defaults write com.apple.screencapture location -string "${HOME}/Desktop"
+echo "Changing default screenshot location to the downloads..."
+defaults write com.apple.screencapture location -string "${HOME}/Downloads"
 
 echo "Changing default screenshot format to PNG..."
 defaults write com.apple.screencapture type -string "png"
@@ -280,7 +304,7 @@ echo "Increasing the size of icons on the desktop and in other icon views..."
 echo "Forcing list view in all Finder windows by default..."
 defaults write com.apple.finder FXPreferredViewStyle -string "Nlsv"
 
-echo "Disavbling the warning before emptying the Trash..."
+echo "Disabling the warning before emptying the Trash..."
 defaults write com.apple.finder WarnOnEmptyTrash -bool false
 
 echo "Enabling AirDrop over Ethernet and on unsupported Macs running Lion..."
@@ -317,7 +341,7 @@ defaults write com.apple.dock tilesize -int 36
 echo "Changing minimize/maximize window effect..."
 defaults write com.apple.dock mineffect -string "scale"
 
-echo "Forcing windows  to minimize into their application’s icon..."
+echo "Forcing windows to minimize into their application’s icon..."
 defaults write com.apple.dock minimize-to-application -bool true
 
 echo "Enabling spring loading for all Dock items..."
@@ -343,15 +367,6 @@ defaults write com.apple.dock launchanim -bool false
 echo "Speeding up Mission Control animations..."
 defaults write com.apple.dock expose-animation-duration -float 0.1
 
-echo "Disabling Dashbpard..."
-defaults write com.apple.dashboard mcx-disabled -bool true
-
-echo "Disabling Dashboard to show as a space..."
-defaults write com.apple.dock dashboard-in-overlay -bool true
-
-echo "Disabling automatic ordering of spaces based on use..."
-defaults write com.apple.dock mru-spaces -bool false
-
 echo "Removing the auto-hiding Dock delay..."
 defaults write com.apple.dock autohide-delay -float 0
 
@@ -363,10 +378,6 @@ defaults write com.apple.dock autohide -bool true
 
 echo "Making Dock icons of hidden applications translucent..."
 defaults write com.apple.dock showhidden -bool true
-
-echo "Adding iOS & Watch Simulator to Launchpad..."
-sudo ln -sf "/Applications/Xcode.app/Contents/Developer/Applications/Simulator.app" "/Applications/Simulator.app"
-sudo ln -sf "/Applications/Xcode.app/Contents/Developer/Applications/Simulator (Watch).app" "/Applications/Simulator (Watch).app"
 
 echo "Setting up hot corners..."
 # Hot corners
@@ -466,10 +477,6 @@ defaults write com.apple.Safari com.apple.Safari.ContentPageGroupIdentifier.WebK
 
 echo "### Spotlight related settings ###"
 
-# Hide Spotlight tray-icon (and subsequent helper)
-# Commented out as it doesn't seem to work on OS X Sierra
-# sudo chmod 600 /System/Library/CoreServices/Search.bundle/Contents/MacOS/Search
-
 echo "Disabling Spotlight indexing for any volume that gets mounted and has not yet..."
 sudo defaults write /.Spotlight-V100/VolumeConfiguration Exclusions -array "/Volumes"
 
@@ -528,16 +535,13 @@ defaults write com.apple.terminal SecureKeyboardEntry -bool true
 echo "Disabling the annoying line marks..."
 defaults write com.apple.Terminal ShowLineMarks -int 0
 
-echo "Disabling the annoying prompt when quitting iTerm"
-defaults write com.googlecode.iterm2 PromptOnQuit -bool false
-
 ###############################################################################
 # Time Machine                                                                #
 ###############################################################################
 
 echo "### Time Machine related settings ###"
 
-echo "Disabling Time Machine promt to use new hard drives as backup volume..."
+echo "Disabling Time Machine prompt to use new hard drives as backup volume..."
 defaults write com.apple.TimeMachine DoNotOfferNewDisksForBackup -bool true
 
 echo "Disabling local Time Machine backups..."
@@ -624,19 +628,20 @@ defaults write com.apple.SoftwareUpdate CriticalUpdateInstall -int 1
 echo "Enabling app auto updates..."
 defaults write com.apple.commerce AutoUpdate -bool true
 
+echo "Allow the App Store to reboot machine on macOS updates..."
+defaults write com.apple.commerce AutoUpdateRestartRequired -bool true
+
 ###############################################################################
-# Google Chrome & Google Chrome Canary                                        #
+# Google Chrome                                      #
 ###############################################################################
 
-echo "### Google Chrome and Google Chrome Canary ###"
+echo "### Google Chrome ###"
 
 echo "Disabling the all too sensitive backswipe..."
 # ... on a trackpad
 defaults write com.google.Chrome AppleEnableSwipeNavigateWithScrolls -bool false
-defaults write com.google.Chrome.canary AppleEnableSwipeNavigateWithScrolls -bool false
 # ... on a magic mouse
 defaults write com.google.Chrome AppleEnableMouseSwipeNavigateWithScrolls -bool false
-defaults write com.google.Chrome.canary AppleEnableMouseSwipeNavigateWithScrolls -bool false
 
 echo "Forcing the use the system-native print preview dialog..."
 defaults write com.google.Chrome DisablePrintPreview -bool true
@@ -651,7 +656,7 @@ defaults write com.google.Chrome.canary PMPrintingExpandedStateForPrint2 -bool t
 ###############################################################################
 
 for app in "Activity Monitor" "Address Book" "Calendar" "Contacts" "cfprefsd" \
-	"Dock" "Finder" "Google Chrome" "Google Chrome Canary" \
+	"Dock" "Finder" "Google Chrome" \
 	"Photos" "Safari" "SystemUIServer" "Terminal"; do
 	killall "${app}" &> /dev/null
 done

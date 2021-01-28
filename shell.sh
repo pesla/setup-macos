@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-echo -n "This will install Solarized Dark for Terminal.app and iTerm.app. Continue? [y/n] "
+echo -n "This will install Darcula for Terminal.app and iTerm.app. Continue? [y/n] "
 read answer
 
 if echo "$answer" | grep -iq "^n" ;then
@@ -55,7 +55,7 @@ end tell
 
 EOD
 
-echo "Configuring iTerm.app..."
-open "iterm/darcula.itermcolors"
+# echo "Configuring iTerm.app..."
+# open "iterm/darcula.itermcolors"
 
 echo "All done!"

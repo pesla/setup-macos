@@ -15,13 +15,12 @@ brew install moreutils
 echo "Installing GNU find, locate, updatedb, and xargs, g-prefixed..."
 brew install findutils
 
-echo "Installing GNU sed, overwriting the built-in sed..."
-brew install gnu-sed --with-default-names
+echo "Installing GNU sed..."
+brew install gnu-sed
 
 echo "Upgrading bash to version 4..."
 brew install bash
-brew tap homebrew/versions
-brew install bash-completion2
+brew install bash-completion@2
 
 echo "Switch to using brew-installed bash as default shell (password necessary)..."
 if ! fgrep -q '/usr/local/bin/bash' /etc/shells; then
@@ -30,21 +29,19 @@ if ! fgrep -q '/usr/local/bin/bash' /etc/shells; then
 fi;
 
 echo "Installing vim..."
-brew install vim --override-system-vi
+brew install vim
 
 echo "Installing grep..."
-brew install homebrew/dupes/grep
+brew install grep
 
 echo "Installing openssh..."
-brew install homebrew/dupes/openssh
+brew install openssh
 
 echo "Installing screen..."
-brew install homebrew/dupes/screen
+brew install screen
 
-echo "Installing php71"
-brew tap homebrew/dupes
-brew tap homebrew/homebrew-php
-brew install php71
+echo "Installing lastest php version..."
+brew install php
 
 echo "Cleaning up..."
 brew cleanup
