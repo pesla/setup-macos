@@ -20,7 +20,7 @@ You don't have to use any of these apps (obviously), just make sure to edit the 
 
 Homebrew is a package manager for OS X. In short: it lets you install stuff you need that Apple didn't. Install Homebrew by
  pasting the following at a Terminal prompt:
- 
+
 ```bash
 $ /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
 ```
@@ -52,24 +52,24 @@ You can execute the script by running `./osx.sh`.
 
 I love having consistent color schemes across apps. A color scheme that I really appreciate, is the one that comes with [PHPStorm](https://www.jetbrains.com/phpstorm/):
  `Darcula`. It's a dark theme, nice on the eyes, and overall just good looking:
- 
+
 ![PHPStorm using the Darcula theme](/screenshots/phpstorm-darcula.png?raw=true)
 
 I've created Darcula themes for Terminal, iTerm and Sublime Text 3. You can install the themes by running the corresponding
  install script (`shell.sh` and `sublime.sh`).
- 
+
 ### Terminal.app and iTerm
 
 ![Terminal.app using the Darcula theme](/screenshots/terminal-darcula.png?raw=true)
 
-My Terminal.app runs on Bash and is configured by (some of) my [dotfiles](https://github.com/pesla/dotfiles). Check out 
- [`.bash_prompt`](https://github.com/pesla/dotfiles/blob/master/.bash_prompt) for my prompt configuration. 
+My Terminal.app runs on Bash and is configured by (some of) my [dotfiles](https://github.com/pesla/dotfiles). Check out
+ [`.bash_prompt`](https://github.com/pesla/dotfiles/blob/master/.bash_prompt) for my prompt configuration.
 
 ![iTerm.app using the Darcula theme](/screenshots/iterm-darcula.png?raw=true)
 
 My iTerm 2 runs on Zsh and [OhMyZsh](https://github.com/robbyrussell/oh-my-zsh) instead of Bash. The prompt is configured
 by a custom Zsh theme and depends on powerline fonts to work well.
- 
+
 To install:
 
 1. Clone into `powerline/fonts` and run `install.sh` to install all fonts
@@ -83,4 +83,4 @@ If you changed the default Zsh installation directory, you should manually insta
 
 ![Sublime Text using the Darcula theme](/screenshots/sublime-darcula.png?raw=true)
 
-Executing `sublime.sh` will copy some default (and sane) preferences and install the Darcula theme. 
+Executing `sublime.sh` will copy some default (and sane) preferences and install the Darcula theme.
